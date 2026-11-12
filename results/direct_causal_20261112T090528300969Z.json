@@ -1,0 +1,179 @@
+{
+  "utc": "2026-11-12T09:05:28.300281+00:00",
+  "agent": "DirectAgent",
+  "history": false,
+  "queries": 5,
+  "note": "One constructed scenario; upstream prompt/parser/validator and metric definitions. No history unlike official runner.",
+  "observations": [
+    {
+      "perturbed_node": "A",
+      "effects": {
+        "A": 0,
+        "B": 1,
+        "C": 1
+      },
+      "string": "Perturb(A) -> A:0 B:1 C:1"
+    }
+  ],
+  "reference_count": 5,
+  "references": [
+    {
+      "nodes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "edges": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "edges": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C"
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "edges": [
+        [
+          "A",
+          "C"
+        ],
+        [
+          "C",
+          "B"
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "edges": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "C"
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "edges": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "C",
+          "B"
+        ]
+      ]
+    }
+  ],
+  "prompt": "You are given observations from perturbation experiments on a causal system.\n\n        Semantics:\n        - When a node is perturbed, the perturbed node is 0.\n        - A node is 1 if it is a downstream descendant of the perturbed node in the causal graph.\n        - All other nodes are 0.\n\n        Nodes: A, B, C\nConstraint: The graph should have at most 3 edges.\n\n        Observations:\n        Perturb(A) -> A:0 B:1 C:1\n\n        Prior predictions (do not repeat if avoidable):\n        None\n\n        Task:\n        Output a single directed acyclic graph (DAG) over the nodes above that explains all observations.\n\n        Diversity rule:\n        - A \"diverse\" graph is any valid graph whose edge set is NOT identical to any prior prediction.\n        - Generate diverse graphs when possible to explore the solution space.\n\n        Formatting rules:\n        1) Use only the listed nodes. No self-loops. No cycles.\n        2) Respond with exactly one line:\n        - If there are edges: Graph: A->B, B->C\n        - If there are no edges: Graph: No edges",
+  "max_tokens": 2048,
+  "upstream_sha256": "eb7cb2cbd6f33e45468f7df2ddd41795106a7765b383af90b7628181436d5358",
+  "metrics": {
+    "validity": 1.0,
+    "uniqueness": 0.4,
+    "recovery": 0.4
+  },
+  "records": [
+    {
+      "query": 1,
+      "text": "Graph: A->B, A->C",
+      "model": "deepseek-v4-1-flash-economy",
+      "prompt_tokens": 273,
+      "completion_tokens": 254,
+      "total_tokens": 527,
+      "finish_reason": "stop",
+      "parsed": true,
+      "valid": true
+    },
+    {
+      "query": 2,
+      "text": "Graph: A->B, A->C",
+      "model": "deepseek-v4-1-flash-economy",
+      "prompt_tokens": 273,
+      "completion_tokens": 804,
+      "total_tokens": 1077,
+      "finish_reason": "stop",
+      "parsed": true,
+      "valid": true
+    },
+    {
+      "query": 3,
+      "text": "Graph: A->B, A->C",
+      "model": "deepseek-v4-1-flash-economy",
+      "prompt_tokens": 273,
+      "completion_tokens": 323,
+      "total_tokens": 596,
+      "finish_reason": "stop",
+      "parsed": true,
+      "valid": true
+    },
+    {
+      "query": 4,
+      "text": "Graph: A->B, B->C",
+      "model": "deepseek-v4-1-flash-economy",
+      "prompt_tokens": 273,
+      "completion_tokens": 222,
+      "total_tokens": 495,
+      "finish_reason": "stop",
+      "parsed": true,
+      "valid": true
+    },
+    {
+      "query": 5,
+      "text": "Graph: A->B, A->C",
+      "model": "deepseek-v4-1-flash-economy",
+      "prompt_tokens": 273,
+      "completion_tokens": 310,
+      "total_tokens": 583,
+      "finish_reason": "stop",
+      "parsed": true,
+      "valid": true
+    }
+  ]
+}

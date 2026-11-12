@@ -1,4 +1,15 @@
 # Local secrets
+/config/llm.json
+/config/llm.json.*
+!/config/llm.json.example
+/config/llm.local.yaml
+/config/llm.local.yaml.*
+/config/llm.local.yml
+/config/llm.local.yml.*
+/config/llm.local.toml
+/config/llm.local.toml.*
+/config/llm.local.json
+/config/llm.local.json.*
 .env
 .env.*
 !.env.example
