@@ -1,0 +1,27 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+*secret*
+*credentials*
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Downloaded archives
+*.zip
+
+# Local experiment output (publish selected results explicitly)
+checkpoints/
+logs/
+*.log
+
+# Local editor and OS files
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
