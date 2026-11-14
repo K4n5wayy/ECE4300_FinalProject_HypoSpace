@@ -1,0 +1,262 @@
+{
+  "mode": "quick",
+  "agent": "CoverageMCTSAgent",
+  "history": true,
+  "started_utc": "2026-11-13T05:48:38.525856+00:00",
+  "requested_model": "ark-code-latest",
+  "max_tokens": 2048,
+  "queries_per_case": 2,
+  "datasets": {
+    "causal": {
+      "sha256": "57847411e044e4c247e044aa95d329fc7a9a6d153488854372e8c1d2454cfbd1",
+      "cases": 61
+    },
+    "3d": {
+      "sha256": "05996e3aa7a125887be27741fb2d9ba4ff751f2dfc1291d0602351535e104478",
+      "cases": 9
+    },
+    "boolean": {
+      "sha256": "cf99924cd5469b79ad729db8395df02fa6f0dec408f03c7e606b19e89cdf2fdf",
+      "cases": 35
+    }
+  },
+  "expected_cases": 3,
+  "expected_requests": 6,
+  "method": "mcts-llm",
+  "call_cap": 6,
+  "early_stop": false,
+  "completed": true,
+  "cases": [
+    {
+      "submission_cap": 2,
+      "submitted": 2,
+      "model_call_cap": 2,
+      "seconds": 14.104935,
+      "stop_reason": "submission_cap",
+      "domain": "causal",
+      "case_id": "n1_004",
+      "prompt": "You are given observations from perturbation experiments on a causal system.\n\n        Semantics:\n        - When a node is perturbed, the perturbed node is 0.\n        - A node is 1 if it is a downstream descendant of the perturbed node in the causal graph.\n        - All other nodes are 0.\n\n        Nodes: A, B, C\nConstraint: The graph should have at most 3 edges.\n\n        Observations:\n        Perturb(A) -> A:0 B:1 C:1\n\n        Prior predictions (do not repeat if avoidable):\n        None\n\n        Task:\n        Output a single directed acyclic graph (DAG) over the nodes above that explains all observations.\n\n        Diversity rule:\n        - A \"diverse\" graph is any valid graph whose edge set is NOT identical to any prior prediction.\n        - Generate diverse graphs when possible to explore the solution space.\n\n        Formatting rules:\n        1) Use only the listed nodes. No self-loops. No cycles.\n        2) Respond with exactly one line:\n        - If there are edges: Graph: A->B, B->C\n        - If there are no edges: Graph: No edges",
+      "reference_count": 5,
+      "records": [
+        {
+          "text": "Plan: Add independent outgoing edges from A to both B and C, making B and C direct descendants while keeping the DAG acyclic.\nGraph: A->B, A->C",
+          "model": "deepseek-v4-1-flash-economy",
+          "prompt_tokens": 344,
+          "completion_tokens": 330,
+          "total_tokens": 674,
+          "finish_reason": "stop",
+          "plan_path": [
+            "Add independent outgoing edges from A to both B and C, making B and C direct descendants while keeping the DAG acyclic."
+          ],
+          "reward": 1.0,
+          "prompt": "You are given observations from perturbation experiments on a causal system.\n\n        Semantics:\n        - When a node is perturbed, the perturbed node is 0.\n        - A node is 1 if it is a downstream descendant of the perturbed node in the causal graph.\n        - All other nodes are 0.\n\n        Nodes: A, B, C\nConstraint: The graph should have at most 3 edges.\n\n        Observations:\n        Perturb(A) -> A:0 B:1 C:1\n\n        Prior predictions (do not repeat if avoidable):\n        None\n\n        Task:\n        Output a single directed acyclic graph (DAG) over the nodes above that explains all observations.\n\n        Diversity rule:\n        - A \"diverse\" graph is any valid graph whose edge set is NOT identical to any prior prediction.\n        - Generate diverse graphs when possible to explore the solution space.\n\n        Formatting rules:\n        1) Use only the listed nodes. No self-loops. No cycles.\n        2) Respond with exactly one line:\n        - If there are edges: Graph: A->B, B->C\n        - If there are no edges: Graph: No edges\n\nCurrent search plan: (start from observations)\nPreviously explored next steps at this node: (none)\nFirst write one line 'Plan: <a concrete new structural choice>' that extends the current plan and differs from the explored steps. Then carry that choice through to one complete answer on the following lines.\nUse the original answer format for the complete answer.",
+          "answer": "Graph: A->B, A->C",
+          "valid": true,
+          "submitted": true,
+          "hypothesis_key": "107d8f39871d53b1316b0b46729b8b84",
+          "reference_hit": true
+        },
+        {
+          "text": "Branch: 0\nPlan: Use a single directed path A->B->C so both B and C are downstream descendants of A without matching the prior branching edge set.\nGraph: A->B, B->C",
+          "model": "deepseek-v4-1-flash-economy",
+          "prompt_tokens": 423,
+          "completion_tokens": 602,
+          "total_tokens": 1025,
+          "finish_reason": "stop",
+          "plan_path": [
+            "Use a single directed path A->B->C so both B and C are downstream descendants of A without matching the prior branching edge set."
+          ],
+          "reward": 1.0,
+          "selected_branch": 0,
+          "prompt": "You are given observations from perturbation experiments on a causal system.\n\n        Semantics:\n        - When a node is perturbed, the perturbed node is 0.\n        - A node is 1 if it is a downstream descendant of the perturbed node in the causal graph.\n        - All other nodes are 0.\n\n        Nodes: A, B, C\nConstraint: The graph should have at most 3 edges.\n\n        Observations:\n        Perturb(A) -> A:0 B:1 C:1\n\n        Prior predictions (do not repeat if avoidable):\n        None\n\n        Task:\n        Output a single directed acyclic graph (DAG) over the nodes above that explains all observations.\n\n        Diversity rule:\n        - A \"diverse\" graph is any valid graph whose edge set is NOT identical to any prior prediction.\n        - Generate diverse graphs when possible to explore the solution space.\n\n        Formatting rules:\n        1) Use only the listed nodes. No self-loops. No cycles.\n        2) Respond with exactly one line:\n        - If there are edges: Graph: A->B, B->C\n        - If there are no edges: Graph: No edges\n\nPreviously proposed hypotheses for this question:\nGraph: A->B, A->C\n\nReturn a structurally different hypothesis that still satisfies every observation. Changing formatting or reordering parts of an equivalent answer does not count.\n\nAvailable search branches:\n1. Add independent outgoing edges from A to both B and C, making B and C direct descendants while keeping the DAG acyclic. (visits=1, recent novelty=0.50)\nChoose a branch likely to yield a different valid answer, or 0 for a new direction. Output 'Branch: <number>' on the first line, 'Plan: <concrete structural choice>' on the second, then one complete answer in the original format. Follow the selected branch when proposing the answer.",
+          "answer": "Graph: A->B, B->C",
+          "valid": true,
+          "submitted": true,
+          "hypothesis_key": "2432b0176b3a5a525b93c7ba96455b91",
+          "reference_hit": true
+        }
+      ],
+      "metrics": {
+        "validity": 1.0,
+        "uniqueness": 1.0,
+        "recovery": 0.4
+      }
+    },
+    {
+      "submission_cap": 2,
+      "submitted": 2,
+      "model_call_cap": 2,
+      "seconds": 19.306366,
+      "stop_reason": "submission_cap",
+      "domain": "3d",
+      "case_id": "g3_h3_b1_005",
+      "prompt": "You are given observations of a 3D structure made of unit blocks on a 3x3 grid.\n        Each observation shows a view of the structure from a specific angle.\n        The maximum height of the structure is 3 layers.\n\n        Observations (Top View - shows 1 if ANY layer has a block at that position):\n        \nTop view:\n0 0 0\n0 1 0\n0 0 0\n\n        \n        Task: Infer the complete 3D structure that could produce these observations.\n\n        Structure specifications:\n        - Grid size: 3x3\n        - Maximum height: 3 layers\n        - The structure consists of layers stacked from bottom to top, where each layer is a 3x3 grid with 0 (empty) or 1 (block).\n        \n        Important constraints:\n        1. Layer 1 is the BOTTOM layer (ground level) - it should contain blocks, not be all zeros\n        2. Blocks must be supported from below (a block at height h requires a block at height h-1 in the same position)\n        3. Do not add unnecessary empty layers at the bottom or top\n        4. Layers are numbered from bottom (Layer 1) to top (Layer N)\n        5. Do not exceed the maximum height of 3 layers\n        \n\n        Provide your answer as a 3D structure with each layer specified.\n\n        Output format:\n        Structure:\n        Layer 1:  (bottom layer - should contain at least one block)\n        [row 1 values separated by spaces]\n        [row 2 values separated by spaces]\n        ...\n        Layer 2:\n        [row 1 values separated by spaces]\n        [row 2 values separated by spaces]\n        ...\n        (continue for all layers needed, up to maximum 3 layers)\n        \n        Example of CORRECT output format for a 3x3 grid:\n        Structure:\n        Layer 1:\n        1 0 1\n        0 0 0\n        1 0 1\n        Layer 2:\n        1 0 0\n        0 0 0\n        0 0 1\n        \n        Note: This represents a 3x3x2 structure where:\n        - Layer 1 (bottom) has blocks at corners: (0,0), (0,2), (2,0), (2,2)\n        - Layer 2 (top) has blocks at (0,0) and (2,2), both supported by blocks in Layer 1 below\n        - Every '1' in Layer 2 has a '1' directly below it in Layer 1 (physical support requirement)\n        - Uses spaces between digits (not commas or other separators)\n        \n        INCORRECT formats to avoid:\n        1. Don't start with empty bottom layer: Layer 1 should contain blocks\n        2. Don't use commas: \"1,0,1\" - use spaces instead: \"1 0 1\"\n        3. Don't add blocks without support below them (physics violation)\n        4. Don't exceed 3 layers in height\n        ",
+      "reference_count": 3,
+      "records": [
+        {
+          "text": "Plan: Place a single block at the center position on the bottom layer only, giving the top view center as occupied with no unnecessary upper layers.\n\nStructure:\nLayer 1:\n0 0 0\n0 1 0\n0 0 0",
+          "model": "deepseek-v4-1-flash-economy",
+          "prompt_tokens": 750,
+          "completion_tokens": 474,
+          "total_tokens": 1224,
+          "finish_reason": "stop",
+          "plan_path": [
+            "Place a single block at the center position on the bottom layer only, giving the top view center as occupied with no unnecessary upper layers."
+          ],
+          "reward": 1.0,
+          "prompt": "You are given observations of a 3D structure made of unit blocks on a 3x3 grid.\n        Each observation shows a view of the structure from a specific angle.\n        The maximum height of the structure is 3 layers.\n\n        Observations (Top View - shows 1 if ANY layer has a block at that position):\n        \nTop view:\n0 0 0\n0 1 0\n0 0 0\n\n        \n        Task: Infer the complete 3D structure that could produce these observations.\n\n        Structure specifications:\n        - Grid size: 3x3\n        - Maximum height: 3 layers\n        - The structure consists of layers stacked from bottom to top, where each layer is a 3x3 grid with 0 (empty) or 1 (block).\n        \n        Important constraints:\n        1. Layer 1 is the BOTTOM layer (ground level) - it should contain blocks, not be all zeros\n        2. Blocks must be supported from below (a block at height h requires a block at height h-1 in the same position)\n        3. Do not add unnecessary empty layers at the bottom or top\n        4. Layers are numbered from bottom (Layer 1) to top (Layer N)\n        5. Do not exceed the maximum height of 3 layers\n        \n\n        Provide your answer as a 3D structure with each layer specified.\n\n        Output format:\n        Structure:\n        Layer 1:  (bottom layer - should contain at least one block)\n        [row 1 values separated by spaces]\n        [row 2 values separated by spaces]\n        ...\n        Layer 2:\n        [row 1 values separated by spaces]\n        [row 2 values separated by spaces]\n        ...\n        (continue for all layers needed, up to maximum 3 layers)\n        \n        Example of CORRECT output format for a 3x3 grid:\n        Structure:\n        Layer 1:\n        1 0 1\n        0 0 0\n        1 0 1\n        Layer 2:\n        1 0 0\n        0 0 0\n        0 0 1\n        \n        Note: This represents a 3x3x2 structure where:\n        - Layer 1 (bottom) has blocks at corners: (0,0), (0,2), (2,0), (2,2)\n        - Layer 2 (top) has blocks at (0,0) and (2,2), both supported by blocks in Layer 1 below\n        - Every '1' in Layer 2 has a '1' directly below it in Layer 1 (physical support requirement)\n        - Uses spaces between digits (not commas or other separators)\n        \n        INCORRECT formats to avoid:\n        1. Don't start with empty bottom layer: Layer 1 should contain blocks\n        2. Don't use commas: \"1,0,1\" - use spaces instead: \"1 0 1\"\n        3. Don't add blocks without support below them (physics violation)\n        4. Don't exceed 3 layers in height\n        \n\nCurrent search plan: (start from observations)\nPreviously explored next steps at this node: (none)\nFirst write one line 'Plan: <a concrete new structural choice>' that extends the current plan and differs from the explored steps. Then carry that choice through to one complete answer on the following lines.\nUse the original answer format for the complete answer.",
+          "answer": "Structure:\nLayer 1:\n0 0 0\n0 1 0\n0 0 0",
+          "valid": true,
+          "submitted": true,
+          "hypothesis_key": "a076851a",
+          "reference_hit": true
+        },
+        {
+          "text": "Branch: 0\nPlan: Use a supported vertical stack of two blocks at the center, instead of only one bottom block.\n\nStructure:\nLayer 1:\n0 0 0\n0 1 0\n0 0 0\nLayer 2:\n0 0 0\n0 1 0\n0 0 0",
+          "model": "deepseek-v4-1-flash-economy",
+          "prompt_tokens": 844,
+          "completion_tokens": 857,
+          "total_tokens": 1701,
+          "finish_reason": "stop",
+          "plan_path": [
+            "Use a supported vertical stack of two blocks at the center, instead of only one bottom block."
+          ],
+          "reward": 1.0,
+          "selected_branch": 0,
+          "prompt": "You are given observations of a 3D structure made of unit blocks on a 3x3 grid.\n        Each observation shows a view of the structure from a specific angle.\n        The maximum height of the structure is 3 layers.\n\n        Observations (Top View - shows 1 if ANY layer has a block at that position):\n        \nTop view:\n0 0 0\n0 1 0\n0 0 0\n\n        \n        Task: Infer the complete 3D structure that could produce these observations.\n\n        Structure specifications:\n        - Grid size: 3x3\n        - Maximum height: 3 layers\n        - The structure consists of layers stacked from bottom to top, where each layer is a 3x3 grid with 0 (empty) or 1 (block).\n        \n        Important constraints:\n        1. Layer 1 is the BOTTOM layer (ground level) - it should contain blocks, not be all zeros\n        2. Blocks must be supported from below (a block at height h requires a block at height h-1 in the same position)\n        3. Do not add unnecessary empty layers at the bottom or top\n        4. Layers are numbered from bottom (Layer 1) to top (Layer N)\n        5. Do not exceed the maximum height of 3 layers\n        \n\n        Provide your answer as a 3D structure with each layer specified.\n\n        Output format:\n        Structure:\n        Layer 1:  (bottom layer - should contain at least one block)\n        [row 1 values separated by spaces]\n        [row 2 values separated by spaces]\n        ...\n        Layer 2:\n        [row 1 values separated by spaces]\n        [row 2 values separated by spaces]\n        ...\n        (continue for all layers needed, up to maximum 3 layers)\n        \n        Example of CORRECT output format for a 3x3 grid:\n        Structure:\n        Layer 1:\n        1 0 1\n        0 0 0\n        1 0 1\n        Layer 2:\n        1 0 0\n        0 0 0\n        0 0 1\n        \n        Note: This represents a 3x3x2 structure where:\n        - Layer 1 (bottom) has blocks at corners: (0,0), (0,2), (2,0), (2,2)\n        - Layer 2 (top) has blocks at (0,0) and (2,2), both supported by blocks in Layer 1 below\n        - Every '1' in Layer 2 has a '1' directly below it in Layer 1 (physical support requirement)\n        - Uses spaces between digits (not commas or other separators)\n        \n        INCORRECT formats to avoid:\n        1. Don't start with empty bottom layer: Layer 1 should contain blocks\n        2. Don't use commas: \"1,0,1\" - use spaces instead: \"1 0 1\"\n        3. Don't add blocks without support below them (physics violation)\n        4. Don't exceed 3 layers in height\n        \n\nPreviously proposed hypotheses for this question:\nStructure:\nLayer 1:\n0 0 0\n0 1 0\n0 0 0\n\nReturn a structurally different hypothesis that still satisfies every observation. Changing formatting or reordering parts of an equivalent answer does not count.\n\nAvailable search branches:\n1. Place a single block at the center position on the bottom layer only, giving the top view center as occupied with no unnecessary upper layers. (visits=1, recent novelty=0.50)\nChoose a branch likely to yield a different valid answer, or 0 for a new direction. Output 'Branch: <number>' on the first line, 'Plan: <concrete structural choice>' on the second, then one complete answer in the original format. Follow the selected branch when proposing the answer.",
+          "answer": "Structure:\nLayer 1:\n0 0 0\n0 1 0\n0 0 0\nLayer 2:\n0 0 0\n0 1 0\n0 0 0",
+          "valid": true,
+          "submitted": true,
+          "hypothesis_key": "6353a02c",
+          "reference_hit": true
+        }
+      ],
+      "metrics": {
+        "validity": 1.0,
+        "uniqueness": 1.0,
+        "recovery": 0.6666666666666666
+      }
+    },
+    {
+      "submission_cap": 2,
+      "submitted": 2,
+      "model_call_cap": 2,
+      "seconds": 10.494613,
+      "stop_reason": "submission_cap",
+      "domain": "boolean",
+      "case_id": "n2_inputs_00_11_outputs_01",
+      "prompt": "You are given partial observations of a Boolean function with variables: x, y\n\n            Allowed operators: AND (conjunction), OR (disjunction)\n\n            Observations (input -> output):\n            (x=0, y=0) -> 0\n(x=1, y=1) -> 1\n\n            Prior expressions generated (avoid repeating any expression \n            that is equivalent under the rules below):\n            None\n\n            Task: Generate a single Boolean expression that is consistent with ALL observations.\n\n            Requirements:\n            1. Use ONLY the variables: x, y\n            2. Use ONLY these operators: AND, OR\n            3. The expression must match all given observations\n            4. Structural uniqueness is judged by these rules:\n            - Commutativity: reorderings are the SAME (e.g., x AND y = y AND x).\n        - Idempotence: duplicates of the same input under AND/OR collapse (e.g., x AND x = x; x OR x = x).\n        - Associativity flattening: cascades of the SAME operator are the SAME regardless of parentheses (e.g., (x AND y) AND x = x AND (y AND x) = x AND x AND y).\n        - No distributivity, absorption, or De Morgan normalization: mixing operators keeps expressions DIFFERENT (e.g., (x AND y) OR z ≠ x AND (y OR z)).\n            5. Expression depth should be at most 2 levels of nesting\n            6. Do not use boolean constants True or False anywhere in the expression.\n\n            Output format: \n            - Return ONLY the Boolean expression on a single line\n            - Use plain text format (no LaTeX, no markdown, no special formatting)\n            - Use uppercase for operators. \n            - Use lowercase for variables: x, y\n            - Use parentheses for grouping when needed\n            - Start your response with \"Expression: \" followed by the expression\n            \n            Examples of correct format:\n            Expression: x AND y\n            Expression: (x OR y) AND NOT x\n            Expression: NOT (x AND y)\n            Expression: NOR(x, y)\n            \n            DO NOT use formats like:\n            - \\(x \\land y\\)  (LaTeX)\n            - `x AND y`  (markdown)\n            - x ∧ y  (mathematical symbols)\n            ",
+      "reference_count": 10,
+      "records": [
+        {
+          "text": "Plan: Combine x and y with AND, which evaluates to 0 at 00 and 1 at 11.\nExpression: x AND y",
+          "model": "deepseek-v4-1-flash-economy",
+          "prompt_tokens": 593,
+          "completion_tokens": 309,
+          "total_tokens": 902,
+          "finish_reason": "stop",
+          "plan_path": [
+            "Combine x and y with AND, which evaluates to 0 at 00 and 1 at 11."
+          ],
+          "reward": 1.0,
+          "prompt": "You are given partial observations of a Boolean function with variables: x, y\n\n            Allowed operators: AND (conjunction), OR (disjunction)\n\n            Observations (input -> output):\n            (x=0, y=0) -> 0\n(x=1, y=1) -> 1\n\n            Prior expressions generated (avoid repeating any expression \n            that is equivalent under the rules below):\n            None\n\n            Task: Generate a single Boolean expression that is consistent with ALL observations.\n\n            Requirements:\n            1. Use ONLY the variables: x, y\n            2. Use ONLY these operators: AND, OR\n            3. The expression must match all given observations\n            4. Structural uniqueness is judged by these rules:\n            - Commutativity: reorderings are the SAME (e.g., x AND y = y AND x).\n        - Idempotence: duplicates of the same input under AND/OR collapse (e.g., x AND x = x; x OR x = x).\n        - Associativity flattening: cascades of the SAME operator are the SAME regardless of parentheses (e.g., (x AND y) AND x = x AND (y AND x) = x AND x AND y).\n        - No distributivity, absorption, or De Morgan normalization: mixing operators keeps expressions DIFFERENT (e.g., (x AND y) OR z ≠ x AND (y OR z)).\n            5. Expression depth should be at most 2 levels of nesting\n            6. Do not use boolean constants True or False anywhere in the expression.\n\n            Output format: \n            - Return ONLY the Boolean expression on a single line\n            - Use plain text format (no LaTeX, no markdown, no special formatting)\n            - Use uppercase for operators. \n            - Use lowercase for variables: x, y\n            - Use parentheses for grouping when needed\n            - Start your response with \"Expression: \" followed by the expression\n            \n            Examples of correct format:\n            Expression: x AND y\n            Expression: (x OR y) AND NOT x\n            Expression: NOT (x AND y)\n            Expression: NOR(x, y)\n            \n            DO NOT use formats like:\n            - \\(x \\land y\\)  (LaTeX)\n            - `x AND y`  (markdown)\n            - x ∧ y  (mathematical symbols)\n            \n\nCurrent search plan: (start from observations)\nPreviously explored next steps at this node: (none)\nFirst write one line 'Plan: <a concrete new structural choice>' that extends the current plan and differs from the explored steps. Then carry that choice through to one complete answer on the following lines.\nUse the original answer format for the complete answer.",
+          "answer": "Expression: x AND y",
+          "valid": true,
+          "submitted": true,
+          "hypothesis_key": [
+            "AND",
+            [
+              [
+                "VAR",
+                "x"
+              ],
+              [
+                "VAR",
+                "y"
+              ]
+            ]
+          ],
+          "reference_hit": true
+        },
+        {
+          "text": "Branch: 0\nPlan: Use a disjunction of x and y; it evaluates to 0 at (0,0) and 1 at (1,1), and is structurally different from x AND y.\nExpression: x OR y",
+          "model": "deepseek-v4-1-flash-economy",
+          "prompt_tokens": 664,
+          "completion_tokens": 385,
+          "total_tokens": 1049,
+          "finish_reason": "stop",
+          "plan_path": [
+            "Use a disjunction of x and y; it evaluates to 0 at (0,0) and 1 at (1,1), and is structurally different from x AND y."
+          ],
+          "reward": 1.0,
+          "selected_branch": 0,
+          "prompt": "You are given partial observations of a Boolean function with variables: x, y\n\n            Allowed operators: AND (conjunction), OR (disjunction)\n\n            Observations (input -> output):\n            (x=0, y=0) -> 0\n(x=1, y=1) -> 1\n\n            Prior expressions generated (avoid repeating any expression \n            that is equivalent under the rules below):\n            None\n\n            Task: Generate a single Boolean expression that is consistent with ALL observations.\n\n            Requirements:\n            1. Use ONLY the variables: x, y\n            2. Use ONLY these operators: AND, OR\n            3. The expression must match all given observations\n            4. Structural uniqueness is judged by these rules:\n            - Commutativity: reorderings are the SAME (e.g., x AND y = y AND x).\n        - Idempotence: duplicates of the same input under AND/OR collapse (e.g., x AND x = x; x OR x = x).\n        - Associativity flattening: cascades of the SAME operator are the SAME regardless of parentheses (e.g., (x AND y) AND x = x AND (y AND x) = x AND x AND y).\n        - No distributivity, absorption, or De Morgan normalization: mixing operators keeps expressions DIFFERENT (e.g., (x AND y) OR z ≠ x AND (y OR z)).\n            5. Expression depth should be at most 2 levels of nesting\n            6. Do not use boolean constants True or False anywhere in the expression.\n\n            Output format: \n            - Return ONLY the Boolean expression on a single line\n            - Use plain text format (no LaTeX, no markdown, no special formatting)\n            - Use uppercase for operators. \n            - Use lowercase for variables: x, y\n            - Use parentheses for grouping when needed\n            - Start your response with \"Expression: \" followed by the expression\n            \n            Examples of correct format:\n            Expression: x AND y\n            Expression: (x OR y) AND NOT x\n            Expression: NOT (x AND y)\n            Expression: NOR(x, y)\n            \n            DO NOT use formats like:\n            - \\(x \\land y\\)  (LaTeX)\n            - `x AND y`  (markdown)\n            - x ∧ y  (mathematical symbols)\n            \n\nPreviously proposed hypotheses for this question:\nExpression: x AND y\n\nReturn a structurally different hypothesis that still satisfies every observation. Changing formatting or reordering parts of an equivalent answer does not count.\n\nAvailable search branches:\n1. Combine x and y with AND, which evaluates to 0 at 00 and 1 at 11. (visits=1, recent novelty=0.50)\nChoose a branch likely to yield a different valid answer, or 0 for a new direction. Output 'Branch: <number>' on the first line, 'Plan: <concrete structural choice>' on the second, then one complete answer in the original format. Follow the selected branch when proposing the answer.",
+          "answer": "Expression: x OR y",
+          "valid": true,
+          "submitted": true,
+          "hypothesis_key": [
+            "OR",
+            [
+              [
+                "VAR",
+                "x"
+              ],
+              [
+                "VAR",
+                "y"
+              ]
+            ]
+          ],
+          "reference_hit": true
+        }
+      ],
+      "metrics": {
+        "validity": 1.0,
+        "uniqueness": 1.0,
+        "recovery": 0.2
+      }
+    }
+  ],
+  "summary": {
+    "all": {
+      "cases": 3,
+      "requests": 6,
+      "submissions": 6,
+      "total_tokens": 6575,
+      "request_errors": 0,
+      "validity": 1.0,
+      "uniqueness": 1.0,
+      "recovery": 0.4222222222222222
+    },
+    "causal": {
+      "cases": 1,
+      "requests": 2,
+      "submissions": 2,
+      "total_tokens": 1699,
+      "request_errors": 0,
+      "validity": 1.0,
+      "uniqueness": 1.0,
+      "recovery": 0.4
+    },
+    "3d": {
+      "cases": 1,
+      "requests": 2,
+      "submissions": 2,
+      "total_tokens": 2925,
+      "request_errors": 0,
+      "validity": 1.0,
+      "uniqueness": 1.0,
+      "recovery": 0.6666666666666666
+    },
+    "boolean": {
+      "cases": 1,
+      "requests": 2,
+      "submissions": 2,
+      "total_tokens": 1951,
+      "request_errors": 0,
+      "validity": 1.0,
+      "uniqueness": 1.0,
+      "recovery": 0.2
+    }
+  }
+}

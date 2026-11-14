@@ -1,0 +1,2604 @@
+[
+  {
+    "baseline": "direct_baseline_20261113T051423521151Z.json",
+    "method": "memory_baseline_20261113T053125642092Z.json",
+    "model": "deepseek-v4-1-flash-economy",
+    "summary": {
+      "all": {
+        "baseline": {
+          "cases": 105,
+          "requests": 352,
+          "request_errors": 2,
+          "validity": 0.9944444444444445,
+          "uniqueness": 0.5123809523809524,
+          "recovery": 0.5123809523809524
+        },
+        "method": {
+          "cases": 105,
+          "requests": 352,
+          "request_errors": 25,
+          "validity": 0.9514285714285714,
+          "uniqueness": 0.9495238095238095,
+          "recovery": 0.9495238095238095
+        },
+        "delta": {
+          "validity": -0.043015873015873014,
+          "uniqueness": 0.43714285714285717,
+          "recovery": 0.43714285714285717
+        }
+      },
+      "causal": {
+        "baseline": {
+          "cases": 61,
+          "requests": 175,
+          "request_errors": 1,
+          "validity": 0.9959016393442623,
+          "uniqueness": 0.6163934426229508,
+          "recovery": 0.6163934426229508
+        },
+        "method": {
+          "cases": 61,
+          "requests": 175,
+          "request_errors": 1,
+          "validity": 0.994535519125683,
+          "uniqueness": 0.994535519125683,
+          "recovery": 0.994535519125683
+        },
+        "delta": {
+          "validity": -0.0013661202185792356,
+          "uniqueness": 0.37814207650273224,
+          "recovery": 0.37814207650273224
+        }
+      },
+      "3d": {
+        "baseline": {
+          "cases": 9,
+          "requests": 27,
+          "request_errors": 0,
+          "validity": 1.0,
+          "uniqueness": 0.3333333333333333,
+          "recovery": 0.3333333333333333
+        },
+        "method": {
+          "cases": 9,
+          "requests": 27,
+          "request_errors": 1,
+          "validity": 0.9629629629629629,
+          "uniqueness": 0.9629629629629629,
+          "recovery": 0.9629629629629629
+        },
+        "delta": {
+          "validity": -0.03703703703703704,
+          "uniqueness": 0.6296296296296297,
+          "recovery": 0.6296296296296297
+        }
+      },
+      "boolean": {
+        "baseline": {
+          "cases": 35,
+          "requests": 150,
+          "request_errors": 1,
+          "validity": 0.9904761904761905,
+          "uniqueness": 0.37714285714285717,
+          "recovery": 0.37714285714285717
+        },
+        "method": {
+          "cases": 35,
+          "requests": 150,
+          "request_errors": 23,
+          "validity": 0.8733333333333333,
+          "uniqueness": 0.8676190476190476,
+          "recovery": 0.8676190476190476
+        },
+        "delta": {
+          "validity": -0.11714285714285713,
+          "uniqueness": 0.4904761904761905,
+          "recovery": 0.4904761904761905
+        }
+      }
+    },
+    "reported_token_usage": {
+      "DirectAgent": {
+        "prompt_tokens": 145852,
+        "completion_tokens": 176694,
+        "total_tokens": 322546
+      },
+      "MemoryAgent": {
+        "prompt_tokens": 146209,
+        "completion_tokens": 230467,
+        "total_tokens": 376676
+      }
+    },
+    "paired_deltas": [
+      {
+        "domain": "causal",
+        "case_id": "n1_001",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "baseline_calls": 12,
+        "method_calls": 12,
+        "baseline_submissions": 12,
+        "method_submissions": 12,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_002",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_003",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_004",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.8,
+        "recovery": 0.8
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_005",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "baseline_calls": 12,
+        "method_calls": 12,
+        "baseline_submissions": 12,
+        "method_submissions": 12,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_006",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_007",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_008",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.8,
+        "recovery": 0.8
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_009",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2,
+          3,
+          4,
+          4,
+          4,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "baseline_calls": 12,
+        "method_calls": 12,
+        "baseline_submissions": 12,
+        "method_submissions": 12,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5833333333333333,
+        "recovery": 0.5833333333333333
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_010",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_011",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n1_012",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.8,
+        "recovery": 0.8
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_001",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          3,
+          3
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.25,
+        "recovery": 0.25
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_002",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_003",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_004",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.33333333333333337,
+        "recovery": 0.33333333333333337
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_005",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_006",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_007",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_008",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_009",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_010",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_011",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_012",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_013",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_014",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_015",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_016",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_017",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_018",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_019",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.33333333333333337,
+        "recovery": 0.33333333333333337
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_020",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_021",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_022",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_023",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_024",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          0,
+          1,
+          2
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.33333333333333337,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_025",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "baseline_calls": 4,
+        "method_calls": 4,
+        "baseline_submissions": 4,
+        "method_submissions": 4,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.25,
+        "uniqueness": 0.75,
+        "recovery": 0.75
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_026",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_027",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_028",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_029",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "causal",
+        "case_id": "n2_030",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_001",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_002",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_003",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_004",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_005",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_006",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_007",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_008",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_009",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_010",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_011",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_012",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_013",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_014",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_015",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_016",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_017",
+        "baseline_recovered_by_call": [
+          1
+        ],
+        "method_recovered_by_call": [
+          1
+        ],
+        "baseline_calls": 1,
+        "method_calls": 1,
+        "baseline_submissions": 1,
+        "method_submissions": 1,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_018",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "causal",
+        "case_id": "n3_019",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_001",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_002",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_003",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_004",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_005",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_006",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          0,
+          1,
+          2
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.33333333333333337,
+        "uniqueness": 0.3333333333333333,
+        "recovery": 0.3333333333333333
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_007",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_008",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "3d",
+        "case_id": "g3_h3_b1_009",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n1_inputs_00_outputs_0",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          3,
+          3
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          8,
+          9
+        ],
+        "baseline_calls": 10,
+        "method_calls": 10,
+        "baseline_submissions": 10,
+        "method_submissions": 10,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.09999999999999998,
+        "uniqueness": 0.6000000000000001,
+        "recovery": 0.6000000000000001
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n1_inputs_01_outputs_0",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          1,
+          2,
+          2,
+          3
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.4,
+        "uniqueness": 0.39999999999999997,
+        "recovery": 0.39999999999999997
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n1_inputs_01_outputs_1",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n1_inputs_10_outputs_0",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.8,
+        "recovery": 0.8
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n1_inputs_10_outputs_1",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n1_inputs_11_outputs_1",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4,
+          5,
+          6,
+          7,
+          7,
+          7
+        ],
+        "baseline_calls": 10,
+        "method_calls": 10,
+        "baseline_submissions": 10,
+        "method_submissions": 10,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.30000000000000004,
+        "uniqueness": 0.49999999999999994,
+        "recovery": 0.49999999999999994
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_00_01_outputs_00",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_00_01_outputs_01",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          2,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_00_10_outputs_00",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.6000000000000001,
+        "recovery": 0.6000000000000001
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_00_10_outputs_01",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.8,
+        "recovery": 0.8
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_00_11_outputs_01",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4,
+          5,
+          6,
+          6,
+          6,
+          6
+        ],
+        "baseline_calls": 10,
+        "method_calls": 10,
+        "baseline_submissions": 10,
+        "method_submissions": 10,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.3,
+        "recovery": 0.3
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_01_10_outputs_00",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_01_10_outputs_01",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.33333333333333337,
+        "recovery": 0.33333333333333337
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_01_10_outputs_10",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          1,
+          2
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.33333333333333337,
+        "uniqueness": 0.3333333333333333,
+        "recovery": 0.3333333333333333
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_01_10_outputs_11",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_01_11_outputs_01",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_01_11_outputs_11",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_10_11_outputs_01",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          3,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n2_inputs_10_11_outputs_11",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6,
+        "recovery": 0.6
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_01_10_outputs_000",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          1
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.5,
+        "uniqueness": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_01_10_outputs_001",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_01_10_outputs_010",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_01_10_outputs_011",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_01_11_outputs_001",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          3,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_01_11_outputs_011",
+        "baseline_recovered_by_call": [
+          1,
+          2,
+          2,
+          2,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          1,
+          2,
+          3,
+          3
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.4,
+        "uniqueness": 0.19999999999999996,
+        "recovery": 0.19999999999999996
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_10_11_outputs_001",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.6000000000000001,
+        "recovery": 0.6000000000000001
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_00_10_11_outputs_011",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3,
+          4,
+          4
+        ],
+        "baseline_calls": 5,
+        "method_calls": 5,
+        "baseline_submissions": 5,
+        "method_submissions": 5,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": -0.19999999999999996,
+        "uniqueness": 0.4,
+        "recovery": 0.4
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_01_10_11_outputs_001",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_01_10_11_outputs_011",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_01_10_11_outputs_101",
+        "baseline_recovered_by_call": [
+          0,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.33333333333333337,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n3_inputs_01_10_11_outputs_111",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n4_inputs_00_01_10_11_outputs_0001",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n4_inputs_00_01_10_11_outputs_0011",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n4_inputs_00_01_10_11_outputs_0101",
+        "baseline_recovered_by_call": [
+          1,
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2,
+          3
+        ],
+        "baseline_calls": 3,
+        "method_calls": 3,
+        "baseline_submissions": 3,
+        "method_submissions": 3,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.6666666666666667,
+        "recovery": 0.6666666666666667
+      },
+      {
+        "domain": "boolean",
+        "case_id": "n4_inputs_00_01_10_11_outputs_0111",
+        "baseline_recovered_by_call": [
+          1,
+          1
+        ],
+        "method_recovered_by_call": [
+          1,
+          2
+        ],
+        "baseline_calls": 2,
+        "method_calls": 2,
+        "baseline_submissions": 2,
+        "method_submissions": 2,
+        "baseline_seconds": null,
+        "method_seconds": null,
+        "validity": 0.0,
+        "uniqueness": 0.5,
+        "recovery": 0.5
+      }
+    ]
+  }
+]

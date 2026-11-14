@@ -27,45 +27,65 @@ class OpenAICompatibleClient(LLMClient):
         self.timeout = timeout
 
     def generate(self, prompt: str, *, system: str | None = None,
-                 max_tokens: int = 1024) -> LLMResponse:
+                 max_tokens: int | None = 1024) -> LLMResponse:
         if not isinstance(prompt, str) or not prompt.strip():
             raise ValueError("Prompt must be nonempty text")
-        if isinstance(max_tokens, bool) or not isinstance(max_tokens, int) or max_tokens <= 0:
+        if max_tokens is not None and (type(max_tokens) is not int or max_tokens <= 0):
             raise ValueError("max_tokens must be a positive integer")
         messages = []
         if system:
             messages.append({"role": "system", "content": system})
         messages.append({"role": "user", "content": prompt})
         payload = {"model": self.model, "messages": messages,
-                   "max_tokens": max_tokens, "stream": False}
+                   "stream": False}
+        if max_tokens is not None:
+            payload["max_tokens"] = max_tokens
         request = Request(
             self.base_url + "/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
             headers={"Authorization": "Bearer " + self._api_key,
                      "Content-Type": "application/json"}, method="POST")
+        stage = "connect_or_headers"
         try:
             # No automatic retries: repeated requests can consume extra quota.
             with urlopen(request, timeout=self.timeout) as response:
+                stage = "response_body"
                 data = json.loads(response.read().decode("utf-8"))
         except HTTPError as error:
             status = error.code
             error.close()
             raise LLMError(f"Model service returned HTTP {status}; check credentials, model and quota") from None
-        except (URLError, TimeoutError, OSError):
-            raise LLMError("Model connection failed or timed out") from None
+        except (URLError, TimeoutError, OSError) as error:
+            cause = error.reason if isinstance(error, URLError) else error
+            raise LLMError("Model connection failed or timed out", details={
+                "network_stage": stage,
+                "network_exception": type(cause).__name__,
+                "network_errno": getattr(cause, "errno", None),
+                "network_winerror": getattr(cause, "winerror", None),
+            }) from None
         except (ValueError, UnicodeError):
             raise LLMError("Model service returned invalid JSON") from None
         try:
             choice = data["choices"][0]
             content = choice["message"]["content"]
-            if not isinstance(content, str) or not content.strip():
-                raise ValueError()
             usage = data.get("usage") or {}
+            reasoning_tokens = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
+            if not isinstance(content, str) or not content.strip():
+                raise LLMError(
+                    "Model response has no usable text or an unexpected structure",
+                    details={
+                        "finish_reason": choice.get("finish_reason"),
+                        "reasoning_tokens": reasoning_tokens,
+                        "prompt_tokens": usage.get("prompt_tokens"),
+                        "completion_tokens": usage.get("completion_tokens"),
+                        "total_tokens": usage.get("total_tokens"),
+                    },
+                )
             return LLMResponse(
                 text=content, model=data.get("model") or self.model,
                 prompt_tokens=usage.get("prompt_tokens"),
                 completion_tokens=usage.get("completion_tokens"),
                 total_tokens=usage.get("total_tokens"),
-                finish_reason=choice.get("finish_reason"))
+                finish_reason=choice.get("finish_reason"), reasoning_tokens=reasoning_tokens)
         except (KeyError, IndexError, TypeError, ValueError, AttributeError):
             raise LLMError("Model response has no usable text or an unexpected structure") from None

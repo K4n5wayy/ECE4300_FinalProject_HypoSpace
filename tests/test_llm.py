@@ -63,6 +63,19 @@ class ClientTests(unittest.TestCase):
         with self.assertRaises(LLMError):
             ArkCodingPlanClient(api_key="test-key").generate("question")
 
+    @patch("llm.openai_compatible.urlopen")
+    def test_provider_limit_and_reasoning_usage_on_truncation(self, open_url):
+        response = open_url.return_value.__enter__.return_value
+        response.read.return_value = json.dumps({
+            "choices": [{"message": {"content": None}, "finish_reason": "length"}],
+            "usage": {"completion_tokens": 42, "completion_tokens_details": {"reasoning_tokens": 42}},
+        }).encode()
+        with self.assertRaises(LLMError) as caught:
+            ArkCodingPlanClient(api_key="test-key").generate("question", max_tokens=None)
+        self.assertNotIn("max_tokens", json.loads(open_url.call_args.args[0].data))
+        self.assertEqual(caught.exception.details["finish_reason"], "length")
+        self.assertEqual(caught.exception.details["reasoning_tokens"], 42)
+
     def test_empty_key_rejected(self):
         with self.assertRaises(ValueError):
             ArkCodingPlanClient(api_key="")

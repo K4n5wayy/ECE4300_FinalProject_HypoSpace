@@ -1,0 +1,38 @@
+{
+  "causal": [
+    "n2_002",
+    "n2_023",
+    "n3_004",
+    "n3_012",
+    "n2_018",
+    "n3_013",
+    "n2_017",
+    "n1_006",
+    "n2_005",
+    "n2_025",
+    "n1_009"
+  ],
+  "3d": [
+    "g3_h3_b1_001",
+    "g3_h3_b1_002",
+    "g3_h3_b1_003",
+    "g3_h3_b1_004",
+    "g3_h3_b1_005",
+    "g3_h3_b1_006",
+    "g3_h3_b1_007",
+    "g3_h3_b1_008",
+    "g3_h3_b1_009"
+  ],
+  "boolean": [
+    "n2_inputs_01_10_outputs_00",
+    "n3_inputs_01_10_11_outputs_001",
+    "n2_inputs_01_10_outputs_01",
+    "n3_inputs_00_01_10_outputs_010",
+    "n4_inputs_00_01_10_11_outputs_0101",
+    "n1_inputs_10_outputs_1",
+    "n2_inputs_00_10_outputs_01",
+    "n2_inputs_10_11_outputs_01",
+    "n3_inputs_00_10_11_outputs_001",
+    "n2_inputs_00_11_outputs_01"
+  ]
+}
