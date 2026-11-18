@@ -63,3 +63,12 @@ class ExplorationListTests(unittest.TestCase):
         self.assertEqual(agent.root.visits, 0)
         self.assertFalse(agent.deferred)
         self.assertIn("new", agent.history)
+
+    def test_reflection_reaches_next_prompt_without_entering_the_answer(self):
+        agent = ReasoningTreeAgent(None, "llm", 7, -1, branch_examples=True, reflect=True)
+        self.assertIn("Reflection:", agent.next_prompt("Question"))
+        response = "Branch: 0\nPlan: Try a conjunction\nExpression: x AND y\nReflection: Try another outer operator."
+        self.assertEqual(agent.split_response(response)[1], "Expression: x AND y")
+        agent.observe(response, "new", True)
+        self.assertIn("Last self-review: Try another outer operator.", agent.next_prompt("Question"))
+        self.assertEqual(agent.history["new"], "Expression: x AND y")

@@ -5,6 +5,9 @@ from pathlib import Path
 from .openai_compatible import OpenAICompatibleClient
 
 
+ANSWER_MODEL = "deepseek-v4.1-flash-economy"
+
+
 class ArkCodingPlanClient(OpenAICompatibleClient):
     """Volcengine Coding Plan; deliberately separate from the metered Ark URL."""
     BASE_URL = "https://ark.cn-beijing.volces.com/api/coding/v3"
@@ -39,6 +42,6 @@ class ArkCodingPlanClient(OpenAICompatibleClient):
             raise ValueError("请在 config/llm.json 中填写 api_key，或设置 ARK_API_KEY")
         super().__init__(
             api_key=key,
-            model=model or config.get("model") or os.getenv("ARK_MODEL") or "ark-code-latest",
+            model=model or config.get("model") or os.getenv("ARK_MODEL") or ANSWER_MODEL,
             base_url=self.BASE_URL,
             timeout=timeout if timeout is not None else config.get("timeout", 120))

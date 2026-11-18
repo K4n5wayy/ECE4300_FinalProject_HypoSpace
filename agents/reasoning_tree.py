@@ -14,24 +14,36 @@ class Node:
     reward: float = 0.0
     recent: float = 0.0
     closed: bool = False
+    reflection: str = ""
 
 
 class ReasoningTreeAgent(MemoryAgent):
-    def __init__(self, client, policy, child_limit, duplicate_reward, *, rotate=False):
+    def __init__(self, client, policy, child_limit, duplicate_reward, *, rotate=False,
+                 branch_examples=False, reflect=False, unbounded_tree=False):
         super().__init__(client)
         self.root = Node()
         self.policy = policy
         self.child_limit = child_limit
+        self.unbounded_tree = unbounded_tree
         self.duplicate_reward = duplicate_reward
         self.valid_keys = set()
         self.options = []
         self.rotate = rotate
+        self.branch_examples = branch_examples
+        self.reflect = reflect
         self.deferred = set()
         self.round = 1
 
     @property
     def exhausted(self):
+        if self.unbounded_tree:
+            return not any(not path[-1].closed for path in self.paths([self.root]))
         return self.root.closed
+
+    def paths(self, path):
+        yield path
+        for child in path[-1].children.values():
+            yield from self.paths([*path, child])
 
     def select(self, parent, candidates):
         if self.policy == "breadth":
@@ -57,9 +69,12 @@ class ReasoningTreeAgent(MemoryAgent):
         task = memory_prompt(prompt, self.history)
         if self.policy == "llm":
             self.path = [self.root]
-            self.options = [[self.root]] + [
-                [self.root, child] for child in self.root.children.values() if not child.closed
-            ]
+            if self.unbounded_tree:
+                self.options = [path for path in self.paths([self.root]) if not path[-1].closed]
+            else:
+                self.options = [[self.root]] + [
+                    [self.root, child] for child in self.root.children.values() if not child.closed
+                ]
             if self.rotate:
                 available = [path for path in self.options if id(path[-1]) not in self.deferred]
                 if not available:
@@ -71,8 +86,24 @@ class ReasoningTreeAgent(MemoryAgent):
                 f"{i}: {self.describe(path)} (recent reward {path[-1].recent:.2f})"
                 for i, path in enumerate(self.options)
             )
+            examples = ""
+            if self.branch_examples:
+                examples = (
+                    "\n\nResponse format for a selected branch. The first line must be Branch: "
+                    "followed by its listed number. The snippets below show formatting only. "
+                    "Replace placeholders and use a number from the current menu.\n"
+                    "EXPAND example:\nBranch: 0\nPlan: <one new logical step>\n<complete candidate>\n"
+                    "SOLVE example:\nBranch: 1\n<complete candidate>\n"
+                    "For an exhausted EXPAND branch, put EXHAUSTED on the line after Branch."
+                )
+            if self.reflect:
+                examples += (
+                    "\nAfter the complete candidate, add one short final line starting with Reflection:. "
+                    "State what differs from earlier candidates, what assumption or constraint may "
+                    "need checking, and one next direction if this attempt fails."
+                )
             return (f"{task}\n\nChoose the direction most likely to produce a new valid answer. "
-                    f"Start with Branch: <number>.\n{choices}\n\n{self.protocol()}")
+                    f"Start with Branch: <number>.\n{choices}\n\n{self.protocol()}{examples}")
         return f"{task}\n\n{self.describe(self.path)}\n\n{self.protocol()}"
 
     def describe(self, path):
@@ -80,9 +111,14 @@ class ReasoningTreeAgent(MemoryAgent):
         plans = " / ".join(part.plan for part in path[1:]) or "Start from the observations"
         children = " | ".join(child.plan for child in node.children.values()) or "(none)"
         mode = "SOLVE" if self.must_solve(path) else "EXPAND"
-        return f"{plans}. Mode: {mode}. Existing child steps: {children}."
+        description = f"{plans}. Mode: {mode}. Existing child steps: {children}."
+        if self.reflect and node.reflection:
+            description += f" Last self-review: {node.reflection}"
+        return description
 
     def must_solve(self, path):
+        if self.unbounded_tree:
+            return False
         return len(path[-1].children) >= self.child_limit or len(path) > 2
 
     @staticmethod
@@ -96,8 +132,9 @@ class ReasoningTreeAgent(MemoryAgent):
             "Use the original answer format for the complete candidate."
         )
 
-    @staticmethod
-    def split_response(text):
+    def split_response(self, text):
+        if self.reflect:
+            text, _ = self.extract_reflection(text)
         body = re.sub(r"^\s*Branch:[ \t]*\d+[ \t]*\r?\n", "", text, count=1, flags=re.I)
         first, _, answer = body.strip().partition("\n")
         if first.strip().casefold() == "exhausted":
@@ -106,11 +143,18 @@ class ReasoningTreeAgent(MemoryAgent):
             return first[5:].strip(), answer.strip()
         return "", body
 
+    @staticmethod
+    def extract_reflection(text):
+        match = re.search(r"^[ \t]*Reflection:[ \t]*([^\r\n]*)", text, re.I | re.M)
+        if not match:
+            return text, ""
+        return text[:match.start()].rstrip(), match.group(1).strip()[:400]
+
     def observe(self, text, key, valid):
         plan, answer = self.split_response(text)
         confirmed = True
         if self.options:
-            match = re.match(r"\s*Branch:[ \t]*(\d{1,3})[ \t]*\r?\n", text, re.I)
+            match = re.match(r"\s*Branch:[ \t]*(\d+)[ \t]*\r?\n", text, re.I)
             if match and int(match.group(1)) < len(self.options):
                 self.path = self.options[int(match.group(1))]
             elif len(self.options) == 1:
@@ -143,9 +187,15 @@ class ReasoningTreeAgent(MemoryAgent):
             reward = self.duplicate_reward if key in self.valid_keys else 1
             self.valid_keys.add(key)
             super().observe(answer, key, valid)
+        reflection = self.extract_reflection(text)[1] if self.reflect else ""
+        if reflection and confirmed:
+            # The menu exposes the selected branch on the next iteration.
+            self.path[-1].reflection = reflection
+            if event == "expanded":
+                self.path[-2].reflection = reflection
         for member in self.path:
             member.visits += 1
             member.reward += reward
             member.recent = 0.5 * (reward + member.recent)
         return answer, {"plan_path": [member.plan for member in self.path[1:]],
-                        "reward": reward, "tree_event": event, "exploration_round": self.round}
+                        "reward": reward, "tree_event": event, "exploration_round": self.round, "reflection": reflection}

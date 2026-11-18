@@ -1,7 +1,7 @@
 {
   "ark_coding_plan": {
     "api_key": "",
-    "model": "ark-code-latest",
+    "model": "deepseek-v4.1-flash-economy",
     "timeout": 120
   }
 }

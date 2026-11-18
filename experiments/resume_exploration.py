@@ -18,14 +18,18 @@ def main():
             return
         config = run["tree_config"]
         before = len(run.get("interrupted_case", {}).get("records", []))
+        module = "test_hard_boolean" if config.get("branch_examples") else "test_hard_quick"
+        extra = ["--self-reflection"] if config.get("self_reflection") else []
+        if run.get("parent_run"):
+            extra += ["--search-cap", str(run["call_cap"])]
         result = subprocess.run([
-            sys.executable, "-u", "-m", "experiments.test_hard_quick",
+            sys.executable, "-u", "-m", f"experiments.{module}",
             "--method", "mcts-tree", "--tree-policy", config["policy"],
             "--child-limit", str(config["child_limit"]),
             "--duplicate-reward", str(config["duplicate_reward"]),
             "--exploration-list", config["exploration_list"], "--provider-token-limit",
             "--pause-file", "results/PAUSE_EXPLORATION_LIST_V2",
-            "--resume", str(args.checkpoint),
+            "--resume", str(args.checkpoint), *extra,
         ])
         updated = json.loads(args.checkpoint.read_text(encoding="utf-8"))
         if updated["completed"]:

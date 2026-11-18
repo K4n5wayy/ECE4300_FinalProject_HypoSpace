@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -14,6 +14,7 @@ class MediumEvaluationTests(unittest.TestCase):
         case = {"observation_id": "case"}
         benchmark = SimpleNamespace(
             all_observation_sets=[case],
+            operators={"AND", "OR"},
             create_prompt=lambda *_: "Question",
         )
         answers = iter(["a", "invalid", "a", "b"] * 3)

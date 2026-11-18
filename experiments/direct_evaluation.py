@@ -11,11 +11,14 @@ from statistics import mean
 import sys
 from time import sleep
 
+from .boolean_scoring import expand_nor
+
 from agents import DirectAgent
 from agents.reasoning_tree import ReasoningTreeAgent
 from agents.search import MCTSAgent, MemoryAgent, StructuredMemoryAgent
 from agents.coverage_search import CoverageMCTSAgent
 from llm import ArkCodingPlanClient, LLMError
+from llm.ark_coding_plan import ANSWER_MODEL
 
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM = ROOT / "HypoSpace" / "_HypoSpace-main"
@@ -96,6 +99,9 @@ def load_domain(domain, path):
             expression = benchmark.parse_llm_response(text)
             if expression is None or not allowed_expression.fullmatch(expression):
                 return None, False
+            expression = expand_nor(expression)
+            if expression is None:
+                return None, False
             key = benchmark.get_expression_mechanistic_key(expression)
             if key is None:
                 return None, False
@@ -114,13 +120,21 @@ def summarize(cases):
     for group in ("all", "causal", "3d", "boolean"):
         rows = [case for case in cases if group == "all" or case["domain"] == group]
         if rows:
+            # Cases skipped on repeated request errors keep partial results; they are
+            # excluded from validity/uniqueness/recovery and rerun separately later.
+            normal = [row for row in rows if row.get("stop_reason") != "request_errors"]
             summary[group] = {
                 "cases": len(rows),
+                "normal_cases": len(normal),
                 "requests": sum(len(row["records"]) for row in rows),
                 "submissions": sum(row.get("submitted", len(row["records"])) for row in rows),
-                "total_tokens": sum(record.get("total_tokens") or 0 for row in rows for record in row["records"]),
+                "total_tokens": sum(
+                    (record.get("total_tokens") or 0)
+                    + (record.get("reflection_response", {}).get("total_tokens") or 0)
+                    for row in rows for record in row["records"]
+                ),
                 "request_errors": sum("error" in record for row in rows for record in row["records"]),
-                **{metric: mean(row["metrics"][metric] for row in rows)
+                **{metric: mean(row["metrics"][metric] for row in (normal or rows))
                    for metric in ("validity", "uniqueness", "recovery")},
             }
     return summary
@@ -135,31 +149,52 @@ def wait_if_paused(pause_file):
     print("Resumed.", flush=True)
 
 
-def main(*, quick_cases=None, medium=False, hard=False):
+def main(*, quick_cases=None, medium=False, hard=False, branch_examples=False, balanced=False):
     quick = quick_cases is not None
     early_stop = medium or hard
     dataset_root = ROOT / "datasets"
     if hard:
-        dataset_root /= "hard"
+        dataset_root /= "balanced" if balanced else "hard"
     medium_cases = json.loads((ROOT / "datasets/medium_cases.json").read_text()) if medium else None
     parser = argparse.ArgumentParser(description="Quick test" if quick else "Full HypoSpace baseline")
+    parser.add_argument("--dataset", choices=("causal", "3d", "boolean", "boolean_extended"))
+    parser.add_argument("--case-id", help="Evaluate one observation set")
+    parser.add_argument("--output", type=Path, help="Independent result path")
+    parser.add_argument("--seed-case", type=Path, help="Import this case's history from an earlier run")
     parser.add_argument("--queries", type=int, default=None,
                         help="Fixed calls per case. Default: one call per distinct reference hypothesis.")
     parser.add_argument("--method", choices=("direct", "memory", "memory-structured", "mcts", "mcts-breadth", "mcts-recent", "mcts-llm", "mcts-tree"), default="direct")
-    parser.add_argument("--resume", type=Path, help="Resume an interrupted direct, UCT or reasoning-tree run")
+    continuation = parser.add_mutually_exclusive_group()
+    continuation.add_argument("--resume", type=Path, help="Resume an interrupted run with the same model")
+    if balanced:
+        continuation.add_argument("--continue-from", type=Path,
+                                  help="Fork an old-model checkpoint and continue with the fixed answer model")
+    parser.add_argument("--search-cap", type=int, help="Total API attempts for a single case")
     token_limit = parser.add_mutually_exclusive_group()
     token_limit.add_argument("--max-tokens", type=int, default=2048)
     token_limit.add_argument("--provider-token-limit", dest="max_tokens", action="store_const", const=None)
     parser.add_argument("--tree-policy", choices=("uct", "breadth", "recent", "llm"), default="uct")
+    reflection = parser.add_mutually_exclusive_group()
+    reflection.add_argument("--self-reflection", action="store_true")
+    reflection.add_argument("--two-step-reflection", action="store_true")
     parser.add_argument("--exploration-list", choices=("on", "off"),
                         help="Compare LLM node selection with or without round-based deferral")
-    parser.add_argument("--child-limit", type=int, choices=(5, 7), default=5)
+    tree_limit = parser.add_mutually_exclusive_group()
+    tree_limit.add_argument("--child-limit", type=int, choices=(5, 7), default=5)
+    tree_limit.add_argument("--unbounded-tree", action="store_true",
+                            help="Allow reasoning paths and sibling counts to grow within the search budget")
     parser.add_argument("--duplicate-reward", type=int, choices=(0, -1), default=0)
-    parser.add_argument("--model")
+    parser.add_argument("--model", choices=(ANSWER_MODEL,), default=ANSWER_MODEL)
     parser.add_argument("--pause-file", type=Path, default=ROOT / "results" / "PAUSE",
                         help="Pause between requests while this file exists")
     parser.add_argument("--plan", action="store_true", help="Show workload without model calls")
+    if balanced:
+        parser.add_argument("--import-progress", type=Path, help="Prepare a checkpoint from the old hard run")
     args = parser.parse_args()
+    import_progress = args.import_progress if balanced else None
+    continue_from = args.continue_from if balanced else None
+    if import_progress and (args.resume or continue_from):
+        parser.error("Choose either --import-progress, --resume or --continue-from")
     if args.queries is not None and args.queries < 1:
         parser.error("--queries must be positive")
 
@@ -167,16 +202,24 @@ def main(*, quick_cases=None, medium=False, hard=False):
         parser.error("--max-tokens must be positive")
     if args.exploration_list and (args.method != "mcts-tree" or args.tree_policy != "llm"):
         parser.error("--exploration-list requires --method mcts-tree --tree-policy llm")
+    if args.unbounded_tree and (args.method != "mcts-tree" or args.tree_policy != "llm"):
+        parser.error("--unbounded-tree requires --method mcts-tree --tree-policy llm")
+    if (args.self_reflection or args.two_step_reflection) and not (branch_examples and args.method == "mcts-tree" and args.tree_policy == "llm"):
+        parser.error("Reflection requires the Boolean branch-example test with LLM node selection")
     tree = args.method.startswith("mcts")
     jobs = []
     datasets = {}
-    for domain in ("causal", "3d", "boolean"):
-        path = dataset_root / f"{domain}.json"
+    names = ("causal", "3d", "boolean", "boolean_extended") if balanced else ("causal", "3d", "boolean")
+    if args.dataset:
+        names = (args.dataset,)
+    for name in quick_cases if quick else names:
+        domain = "boolean" if name == "boolean_extended" else name
+        path = dataset_root / f"{name}.json"
         benchmark, prepare, score = load_domain(domain, path)
         cases = benchmark.all_observation_sets
         if not cases:
             raise ValueError(f"Empty dataset: {domain}")
-        datasets[domain] = {"sha256": sha256(path.read_bytes()).hexdigest(), "cases": len(cases)}
+        datasets[name] = {"sha256": sha256(path.read_bytes()).hexdigest(), "cases": len(cases)}
         if quick:
             selected_id = quick_cases[domain]
             cases = [case for case in cases
@@ -187,24 +230,53 @@ def main(*, quick_cases=None, medium=False, hard=False):
             by_id = {(case.get("observation_set_id") or case["observation_id"]): case for case in cases}
             cases = [by_id[case_id] for case_id in medium_cases[domain]]
         for case in cases:
+            selected_id = case.get("observation_set_id") or case.get("observation_id")
+            if args.case_id and selected_id != args.case_id:
+                continue
             observations, keys = prepare(case)
             if not keys:
                 raise ValueError(f"Case without references: {domain}")
             case_id = case.get("observation_set_id") or case["observation_id"]
             prompt = benchmark.create_prompt(observations, [])
+            if domain == "boolean" and (balanced or not args.resume):
+                prompt += (
+                    "\n\nCandidate formatting: Put the complete expression on a single line "
+                    "beginning with Expression:. Use the listed variable names, uppercase operators, "
+                    "and balanced parentheses. Keep each operation and its grouping explicit. "
+                    "Keep nested operations even when a shorter formula has the same truth table. "
+                    "Format-only template: Expression: (<left operand>) AND (<right operand>). "
+                    "Replace placeholders with actual operands."
+                )
+                if "NOR" in benchmark.operators:
+                    prompt += (
+                        " Use NOT (...) around an OR expression to write each NOR gate. "
+                        "For scoring, NOT ((A) OR (B)) denotes the same NOR gate as NOR(A, B). "
+                        "Apply this notation recursively: NOR(A, NOR(B, C)) is written as "
+                        "NOT ((A) OR NOT ((B) OR (C))). A, B and C are placeholders for operands, "
+                        "not extra variables. Keep the original grouping and operator structure; "
+                        "do not apply De Morgan's laws, absorption, or double-negation elimination."
+                    )
             jobs.append((domain, case_id, prompt, observations, keys, score,
                          args.queries or (len(keys) + 5 if early_stop else len(keys))))
 
+    if args.search_cap is not None and (args.search_cap < 1 or len(jobs) != 1):
+        parser.error("--search-cap requires one case and a positive total")
     budget = sum(job[-1] for job in jobs)
-    call_cap = budget * (2 if early_stop and tree else 1)
-    print(f"{len(jobs)} cases, up to {budget} submissions and {call_cap} model calls", flush=True)
+    if not jobs:
+        parser.error("No matching cases")
+    call_cap = args.search_cap or budget * (2 if early_stop and tree else 1)
+    submissions = "no separate submission cap" if args.unbounded_tree else f"up to {budget} submissions"
+    print(f"{len(jobs)} cases, {submissions}, up to {call_cap} search attempts", flush=True)
+    if args.two_step_reflection:
+        print(f"Two-step reflection allows up to {2 * call_cap} API requests.", flush=True)
     if args.plan:
         return
 
     def make_agent(client):
         if args.method == "mcts-tree":
             return ReasoningTreeAgent(client, args.tree_policy, args.child_limit, args.duplicate_reward,
-                                      rotate=args.exploration_list == "on")
+                                      rotate=args.exploration_list == "on", branch_examples=branch_examples,
+                                      reflect=args.self_reflection, unbounded_tree=args.unbounded_tree)
         if args.method.startswith("mcts-"):
             return CoverageMCTSAgent(client, args.method.split("-", 1)[1])
         if args.method == "memory-structured":
@@ -215,8 +287,22 @@ def main(*, quick_cases=None, medium=False, hard=False):
     mode = "medium" if medium else "quick" if quick else "baseline"
     if hard:
         mode = "hard_quick" if quick else "hard_full"
+    if balanced:
+        mode = "hard_balanced"
     label = f"{args.method}-list-{args.exploration_list}" if args.exploration_list else args.method
+    if branch_examples:
+        label += "-branch-examples"
+    if args.self_reflection:
+        label += "-reflection"
+    if args.two_step_reflection:
+        label += "-two-step"
+    if args.unbounded_tree:
+        label += "-unbounded"
     output = ROOT / "results" / f"{label}_{mode}_{now:%Y%m%dT%H%M%S%fZ}.json"
+    if args.output:
+        output = args.output
+        if output.exists() and not args.resume:
+            parser.error("Output exists; use --resume")
     result = {"mode": mode, "agent": type(make_agent(client)).__name__, "history": args.method != "direct",
               "started_utc": now.isoformat(), "requested_model": client.model,
               "max_tokens": args.max_tokens, "queries_per_case": args.queries,
@@ -225,24 +311,94 @@ def main(*, quick_cases=None, medium=False, hard=False):
               "completed": False, "cases": [], "summary": {}}
 
     if args.method == "mcts-tree":
-        result["tree_config"] = {"policy": args.tree_policy, "child_limit": args.child_limit,
-                                 "duplicate_reward": args.duplicate_reward}
+        result["tree_config"] = {"policy": args.tree_policy, "duplicate_reward": args.duplicate_reward}
+        if args.unbounded_tree:
+            result["tree_config"]["unbounded_tree"] = True
+        else:
+            result["tree_config"]["child_limit"] = args.child_limit
 
     if args.exploration_list:
         result["tree_config"].update(exploration_list=args.exploration_list, branch_attribution=2)
 
-    if args.resume:
-        if args.method not in ("direct", "mcts", "mcts-tree"):
-            parser.error("--resume supports direct, UCT and reasoning-tree runs")
-        previous = json.loads(args.resume.read_text(encoding="utf-8"))
-        fields = ("mode", "agent", "requested_model", "max_tokens", "queries_per_case",
+    if branch_examples and args.method == "mcts-tree":
+        result["tree_config"]["branch_examples"] = True
+
+    if args.self_reflection:
+        result["tree_config"]["self_reflection"] = True
+
+    if args.two_step_reflection:
+        result["tree_config"]["two_step_reflection"] = True
+        result["api_call_cap"] = 2 * call_cap
+
+    if import_progress:
+        old = json.loads(import_progress.read_text(encoding="utf-8"))
+        fields = ("mode", "method", "agent", "requested_model", "max_tokens", "queries_per_case",
+                  "tree_config")
+        if old["mode"] != "hard_full" or any(old.get(key) != result.get(key)
+                                              for key in fields if key != "mode"):
+            parser.error("Old run does not match the current method and settings")
+        completed = {(case["domain"], case["case_id"]): case for case in old["cases"]}
+        partial = old.get("interrupted_case")
+        for domain, case_id, prompt, _, keys, _, queries in jobs:
+            case = completed.get((domain, case_id))
+            if case is None:
+                if partial and (partial["domain"], partial["case_id"]) == (domain, case_id):
+                    result["interrupted_case"] = partial
+                break
+            if (case["prompt"], case["reference_count"], case["submission_cap"]) != (prompt, len(keys), queries):
+                parser.error(f"Cannot reuse changed case {case_id}")
+            result["cases"].append(case)
+        result["summary"] = summarize(result["cases"])
+        result["parent_run"] = import_progress.name
+        output = ROOT / "results" / f"{args.method}_hard_balanced_checkpoint.json"
+        if output.exists():
+            parser.error(f"Checkpoint already exists: {output}")
+
+    if args.seed_case:
+        if len(jobs) != 1 or args.resume or continue_from:
+            parser.error("--seed-case requires one case and a fresh output")
+        source = json.loads(args.seed_case.read_text(encoding="utf-8"))
+        if source.get("method") != result["method"] or source.get("tree_config") != result.get("tree_config"):
+            parser.error("Seed method and tree configuration must match")
+        domain, case_id = jobs[0][:2]
+        candidates = list(source["cases"])
+        if source.get("interrupted_case"):
+            candidates.append(source["interrupted_case"])
+        saved = next((case for case in candidates
+                      if (case["domain"], case["case_id"]) == (domain, case_id)), None)
+        if saved:
+            result["interrupted_case"] = {key: saved[key] for key in ("domain", "case_id", "prompt", "records")}
+            result["parent_run"] = args.seed_case.name
+            result["seed_requested_model"] = source["requested_model"]
+
+    if args.resume or continue_from:
+        if args.method not in ("direct", "memory", "mcts", "mcts-tree"):
+            parser.error("--resume supports direct, memory, UCT and reasoning-tree runs")
+        previous = json.loads((args.resume or continue_from).read_text(encoding="utf-8"))
+        fields = ("mode", "method", "agent", "max_tokens", "queries_per_case",
                   "datasets", "expected_cases", "expected_requests")
         if args.method == "mcts-tree":
             fields += ("tree_config",)
-        if previous["completed"] or any(previous[key] != result[key] for key in fields):
+        if previous["completed"] or any(previous.get(key) != result[key] for key in fields):
             parser.error("Resume file must be incomplete and match the current run settings")
-        output = args.resume
-        result = previous
+        if continue_from:
+            if previous["requested_model"] == result["requested_model"]:
+                parser.error("Use --resume to continue with the same model")
+            if previous["call_cap"] != result["call_cap"]:
+                parser.error("The source checkpoint must use the same search budget")
+            result.update(cases=previous["cases"], summary=previous["summary"], model_transition={
+                "source_checkpoint": continue_from.name,
+                "previous_requested_model": previous["requested_model"],
+                "carried_cases": len(previous["cases"]),
+                "carried_search_attempts": len(previous.get("interrupted_case", {}).get("records", [])),
+            })
+            if "interrupted_case" in previous:
+                result["interrupted_case"] = previous["interrupted_case"]
+        else:
+            if previous["requested_model"] != result["requested_model"]:
+                parser.error("Checkpoint model differs from the fixed answer model; see AGENTS.md")
+            output = args.resume
+            result = previous
 
     def save():
         output.parent.mkdir(exist_ok=True)
@@ -252,20 +408,23 @@ def main(*, quick_cases=None, medium=False, hard=False):
 
     print(f"Saving results to {output.name}", flush=True)
     save()
+    if import_progress:
+        return
     consecutive_errors = 0
     for index, (domain, case_id, prompt, observations, keys, score, queries) in enumerate(jobs, 1):
         agent = make_agent(client)
         agent.max_tokens = args.max_tokens
         records, unique, recovered = [], set(), set()
         submitted = 0
-        search_cap = queries * (2 if early_stop and tree else 1)
+        search_cap = args.search_cap or queries * (2 if early_stop and tree else 1)
         if index <= len(result["cases"]):
             continue
         partial = result.get("interrupted_case")
         if partial:
             normalize = lambda value: re.sub(r"(Use ONLY these operators: )([^\r\n]+)",
                                              lambda m: m[1] + ", ".join(sorted(m[2].split(", "))), value)
-            if (partial["domain"], partial["case_id"], normalize(partial["prompt"])) != (domain, case_id, normalize(prompt)):
+            saved_base = partial["prompt"].split("\n\nCandidate formatting:", 1)[0]
+            if (partial["domain"], partial["case_id"], normalize(saved_base)) != (domain, case_id, normalize(prompt.split("\n\nCandidate formatting:", 1)[0])):
                 raise ValueError("Interrupted case does not match the next case")
             prompt = partial["prompt"]
             records = list(partial["records"])
@@ -281,31 +440,59 @@ def main(*, quick_cases=None, medium=False, hard=False):
                     _, trace = agent.observe(record["text"], key, valid)
                     if trace.get("plan_path") != record.get("plan_path"):
                         raise ValueError("Cannot reconstruct the saved UCT path")
+                elif args.method == "memory":
+                    agent.observe(record["text"], key, valid)
                 if record.get("submitted", not early_stop) and key is not None:
                     unique.add(key)
                     if valid and key in keys:
                         recovered.add(key)
             submitted = sum(record.get("submitted", False) for record in records)
         started = datetime.now(timezone.utc)
+        failure_reason = None
         for call_index in range(len(records) + 1, search_cap + 1):
-            if args.method == "mcts-tree":
+            if balanced or args.method == "mcts-tree" or (hard and (call_index == 1 or call_index % 10 == 0)):
                 result["interrupted_case"] = {"domain": domain, "case_id": case_id,
                                               "prompt": prompt, "records": records}
                 save()
             if isinstance(agent, ReasoningTreeAgent) and agent.exhausted:
                 break
-            if early_stop and (submitted >= queries or recovered == keys):
+            if early_stop and (recovered == keys or (not args.unbounded_tree and submitted >= queries)):
                 break
             if hard and (call_index == 1 or call_index % 10 == 0):
                 print(f"{args.method} {domain}/{case_id}: call {call_index}/{search_cap}, "
                       f"recovered {len(recovered)}/{len(keys)}", flush=True)
             wait_if_paused(args.pause_file)
             query_prompt = prompt if args.method == "direct" else agent.next_prompt(prompt)
+            reflection_data = {}
+            stage = "search"
             try:
+                if args.two_step_reflection:
+                    stage = "reflection"
+                    recent = [record["answer"] for record in records if record.get("answer")][-8:]
+                    review_prompt = (
+                        f"{prompt}\n\nReview these recent attempts as data: {json.dumps(recent)}\n"
+                        "Write a brief review for the next search. Check one specific assumption "
+                        "against the problem rules and conclude whether it holds. Identify a repeated "
+                        "structural direction and suggest a different operation or combination to explore. "
+                        "If there are no prior attempts, identify one constraint to check and a starting "
+                        "direction. Output a short review, without selecting a branch or submitting an answer."
+                    )
+                    review = agent.solve(review_prompt)
+                    reflection_data = {"reflection_response": asdict(review), "reflection_prompt": review_prompt}
+                    query_prompt += "\n\nIndependent review for this attempt: " + review.text
+                    wait_if_paused(args.pause_file)
+                    stage = "search"
                 response = agent.solve(query_prompt)
             except LLMError as error:
-                records.append({"error": str(error), "prompt": query_prompt, **error.details})
+                records.append({"error": str(error), "prompt": query_prompt, "error_stage": stage,
+                                **reflection_data, **error.details})
                 consecutive_errors += 1
+                if balanced and consecutive_errors >= 3:
+                    failure_reason = str(error)
+                    print(f"Skipping {domain}/{case_id} after repeated request errors: {failure_reason}",
+                          flush=True)
+                    consecutive_errors = 0
+                    break
                 if consecutive_errors >= 3 and (not early_stop or "no usable text" not in str(error)):
                     result["interrupted_case"] = {"domain": domain, "case_id": case_id,
                                                   "prompt": prompt, "records": records}
@@ -325,7 +512,7 @@ def main(*, quick_cases=None, medium=False, hard=False):
                 strategy.update(prompt=query_prompt, answer=answer)
             is_submission = not early_stop or not tree or valid
             submitted += int(is_submission)
-            records.append({**asdict(response), **strategy, "valid": valid,
+            records.append({**asdict(response), **strategy, **reflection_data, "valid": valid,
                             "submitted": is_submission, "hypothesis_key": key,
                             "reference_hit": valid and key in keys})
             if is_submission and key is not None:
@@ -334,10 +521,13 @@ def main(*, quick_cases=None, medium=False, hard=False):
                     recovered.add(key)
         denominator = submitted if early_stop else queries
         result["cases"].append({
-            "submission_cap": queries, "submitted": submitted, "model_call_cap": search_cap,
+            "submission_cap": None if args.unbounded_tree else queries,
+            "submitted": submitted, "model_call_cap": search_cap,
             "seconds": (datetime.now(timezone.utc) - started).total_seconds(),
-            "stop_reason": ("all_recovered" if recovered == keys and early_stop else
-                            "submission_cap" if submitted >= queries else
+            **({"failure_reason": failure_reason} if failure_reason else {}),
+            "stop_reason": ("request_errors" if failure_reason else
+                            "all_recovered" if recovered == keys and early_stop else
+                            "submission_cap" if not args.unbounded_tree and submitted >= queries else
                             "tree_exhausted" if isinstance(agent, ReasoningTreeAgent) and agent.exhausted
                             else "model_call_cap"),
             "domain": domain, "case_id": case_id, "prompt": prompt,
@@ -350,6 +540,11 @@ def main(*, quick_cases=None, medium=False, hard=False):
         save()
         print(f"{index}/{len(jobs)} {domain}/{case_id}", flush=True)
 
+    if args.two_step_reflection:
+        result["api_calls"] = sum(
+            1 + int("reflection_response" in record)
+            for case in result["cases"] for record in case["records"]
+        )
     result["completed"] = True
     save()
     print(json.dumps(result["summary"], indent=2))
